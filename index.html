@@ -33,6 +33,7 @@
       willpower: 1,
       fellowship: 1,
       ballisticSkill: 1,
+      weaponSkill: 1,
       strengthBonus: 0,
       toughnessBonus: 0
     };
@@ -46,6 +47,7 @@
       willpower: 0,
       fellowship: 0,
       ballisticSkill: 0,
+      weaponSkill: 0,
       strengthBonus: 0,
       toughnessBonus: 0
     };
@@ -73,20 +75,21 @@
       // Render the character sheet to the page
       document.getElementById("character-sheet").innerHTML = characterSheet;
 
-      /*
-        for (const ability in selectedAbilities) {
-      document.getElementById(ability).innerHTML = selectedAbilities[ability];
-      }
-      */
 
-      document.getElementById("strength").innerHTML = selectedAbilities["strength"];
-      document.getElementById("toughness").innerHTML = selectedAbilities["toughness"];
-      document.getElementById("agility").innerHTML = selectedAbilities["agility"];
-      document.getElementById("intelligence").innerHTML = selectedAbilities["intelligence"];
-      document.getElementById("perception").innerHTML = selectedAbilities["perception"];
-      document.getElementById("willpower").innerHTML = selectedAbilities["willpower"];
-      document.getElementById("fellowship").innerHTML = selectedAbilities["fellowship"];
-      document.getElementById("ballisticSkill").innerHTML = selectedAbilities["ballisticSkill"];
+      for (const ability in selectedAbilities) {
+        document.getElementById(ability).innerHTML = selectedAbilities[ability];
+      }
+
+      /*
+          document.getElementById("strength").innerHTML = selectedAbilities["strength"];
+          document.getElementById("toughness").innerHTML = selectedAbilities["toughness"];
+          document.getElementById("agility").innerHTML = selectedAbilities["agility"];
+          document.getElementById("intelligence").innerHTML = selectedAbilities["intelligence"];
+          document.getElementById("perception").innerHTML = selectedAbilities["perception"];
+          document.getElementById("willpower").innerHTML = selectedAbilities["willpower"];
+          document.getElementById("fellowship").innerHTML = selectedAbilities["fellowship"];
+          document.getElementById("ballisticSkill").innerHTML = selectedAbilities["ballisticSkill"];
+          */
     }
 
     // Function to handle ability increases
@@ -246,6 +249,8 @@ return exportString;
     <br />
     Ballistic Skill Modifier: <input type="number" id="ballisticSkillModifier" value="0" />
     <br />
+    Weapon Skill Modifier: <input type="number" id="weaponSkillModifier" value="0" />
+    <br />
     Strength Bonus Modifier: <input type="number" id="strengthBonusModifier" value="0" />
     <br />
     Toughness Bonus Modifier: <input type="number" id="toughnessBonusModifier" value="0" />
@@ -286,6 +291,10 @@ return exportString;
     <button onclick="decreaseAbility('ballisticSkill')">-</button>
     Ballistic Skill: <span id="ballisticSkill">0</span>
     <button onclick="increaseAbility('ballisticSkill')">+</button>
+    <br />
+    <button onclick="decreaseAbility('weaponSkill')">-</button>
+    Weapon Skill: <span id="weaponSkill">0</span>
+    <button onclick="increaseAbility('weaponSkill')">+</button>
     <br />
 
     <button onclick="decreaseAbility('strengthBonus')" disabled>-</button>
