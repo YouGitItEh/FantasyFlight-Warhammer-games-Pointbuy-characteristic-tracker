@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>FF Games Pointbuy Characteristic Scores Generator</title>
+  <style>
+    /* Add some styling for the buttons and character sheet */
+    button {
+      padding: 5px 10px;
+      border: none;
+      background-color: #333;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    #character-sheet {
+      border: 1px solid #333;
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Declare variables for available points, point costs, and selected abilities -->
+  <script>
+    let availablePoints = 100;
+    let pointCosts = {
+      strength: 1,
+      toughness: 1,
+      agility: 1,
+      intelligence: 1,
+      perception: 1,
+      willpower: 1,
+      fellowship: 1,
+      ballisticSkill: 1,
+      strengthBonus: 0,
+      toughnessBonus: 0
+    };
+
+    let selectedAbilities = {
+      strength: 0,
+      toughness: 0,
+      agility: 0,
+      intelligence: 0,
+      perception: 0,
+      willpower: 0,
+      fellowship: 0,
+      ballisticSkill: 0,
+      strengthBonus: 0,
+      toughnessBonus: 0
+    };
+
+    // Function to update the available points and selected abilities when a ability is increased or decreased
+    function updatePoints(ability, change) {
+      availablePoints -= change * pointCosts[ability];
+      selectedAbilities[ability] += change;
+    }
+
+    // Function to render the character sheet to the page
+    function renderCharacterSheet() {
+      let characterSheet = "";
+
+      characterSheet += "<h2>Character Sheet</h2>";
+      characterSheet += "<p>Available Points: " + availablePoints + "</p>";
+
+      characterSheet += "<h3>Abilities</h3>";
+      characterSheet += "<ul>";
+      for (const ability in selectedAbilities) {
+        characterSheet += "<li>" + ability + ": " + (selectedAbilities[ability] + parseInt(document.getElementById(ability + "Modifier").value)) + "</li>";
+      }
+      characterSheet += "</ul>";
+
+      // Render the character sheet to the page
+      document.getElementById("character-sheet").innerHTML = characterSheet;
+
+      /*
+        for (const ability in selectedAbilities) {
+      document.getElementById(ability).innerHTML = selectedAbilities[ability];
+      }
+      */
+
+      document.getElementById("strength").innerHTML = selectedAbilities["strength"];
+      document.getElementById("toughness").innerHTML = selectedAbilities["toughness"];
+      document.getElementById("agility").innerHTML = selectedAbilities["agility"];
+      document.getElementById("intelligence").innerHTML = selectedAbilities["intelligence"];
+      document.getElementById("perception").innerHTML = selectedAbilities["perception"];
+      document.getElementById("willpower").innerHTML = selectedAbilities["willpower"];
+      document.getElementById("fellowship").innerHTML = selectedAbilities["fellowship"];
+      document.getElementById("ballisticSkill").innerHTML = selectedAbilities["ballisticSkill"];
+    }
+
+    // Function to handle ability increases
+    function increaseAbility(ability) {
+      if (event.ctrlKey) {
+        // If the Ctrl key is pressed, increase the ability by 10 points
+        if (availablePoints >= 10 * pointCosts[ability]) {
+          updatePoints(ability, 10);
+          renderCharacterSheet();
+        }
+      } else {
+        // Otherwise, increase the ability by 1 point
+        if (availablePoints >= pointCosts[ability]) {
+          updatePoints(ability, 1);
+          renderCharacterSheet();
+        }
+      }
+    }
+
+    // Function to handle ability decreases
+    function decreaseAbility(ability) {
+      if (event.ctrlKey) {
+        // If the Ctrl key is pressed, decrease the ability by 10 points
+        if (selectedAbilities[ability] >= 10) {
+          updatePoints(ability, -10);
+          renderCharacterSheet();
+        }
+      } else {
+        // Otherwise, decrease the ability by 1 point
+        if (selectedAbilities[ability] > 0) {
+          updatePoints(ability, -1);
+          renderCharacterSheet();
+        }
+      }
+    }
+
+    // Function to update the available points and selected abilities when a ability is increased or decreased
+    function updatePoints(ability, change) {
+      availablePoints -= change * pointCosts[ability];
+      selectedAbilities[ability] += change;
+
+      // If the ability is strength, update the strength bonus
+      if (ability === "strength") {
+        selectedAbilities.strengthBonus = Math.floor(selectedAbilities.strength / 10);
+        document.getElementById("strengthBonus").innerHTML = selectedAbilities.strengthBonus;
+      }
+
+      if (ability === "toughness") {
+        selectedAbilities.toughnessBonus = Math.floor(selectedAbilities.toughness / 10);
+        document.getElementById("toughnessBonus").innerHTML = selectedAbilities.toughnessBonus;
+      }
+    }
+
+
+
+    /*// Add an event listener to the apply button
+    document.getElementById("apply-points-button").addEventListener("click", function () {
+      // Get the value of the available points modifier field
+      const points = document.getElementById("available-points").value;
+
+      // Add the modifier to the available points
+      availablePoints = points;
+      console.log(points)
+      console.log(availablePoints)
+    });*/
+
+    function setPoints() {
+      // Get the value of the available points modifier field
+      const points = document.getElementById("available-points").value;
+
+      // Add the modifier to the available points
+      availablePoints = points;
+      renderCharacterSheet();
+    }
+
+
+    // Initial render of the character sheet
+    renderCharacterSheet();
+
+    /*
+    function exportVariables() {
+// Create an object to hold the variable values
+const exportObject = {
+  availablePoints: availablePoints,
+  selectedAbilities: selectedAbilities,
+  strengthModifier: document.getElementById("strengthModifier").value,
+  toughnessModifier: document.getElementById("toughnessModifier").value,
+  agilityModifier: document.getElementById("agilityModifier").value,
+  intelligenceModifier: document.getElementById("intelligenceModifier").value,
+  perceptionModifier: document.getElementById("perceptionModifier").value,
+  willpowerModifier: document.getElementById("willpowerModifier").value,
+  fellowshipModifier: document.getElementById("fellowshipModifier").value,
+  ballisticSkillModifier: document.getElementById("ballisticSkillModifier").value,
+  strengthBonusModifier: document.getElementById("strengthBonusModifier").value,
+  toughnessBonusModifier: document.getElementById("toughnessBonusModifier").value
+};
+
+// Convert the object to a JSON string
+const exportString = JSON.stringify(exportObject);
+
+// Return the JSON string
+return exportString;
+}
+
+    document.getElementById("export-button").addEventListener("click", function () {
+      const exportString = exportVariables();
+      console.log(exportString);
+    });
+
+    function importVariables(importString) {
+      // Parse the JSON string to an object
+      const importObject = JSON.parse(importString);
+
+      // Set the values of the variables to the values in the import object
+      availablePoints = importObject.availablePoints;
+      selectedAbilities = importObject.selectedAbilities;
+      document.getElementById("strengthModifier").value = importObject.strengthModifier;
+      document.getElementById("toughnessModifier").value = importObject.toughnessModifier;
+      document.getElementById("agilityModifier").value = importObject.agilityModifier;
+      document.getElementById("intelligenceModifier").value = importObject.intelligenceModifier;
+      document.getElementById("perceptionModifier").value = importObject.perceptionModifier;
+      document.getElementById("willpowerModifier").value = importObject.willpowerModifier;
+      document.getElementById("fellowshipModifier").value = importObject.fellowshipModifier;
+      document.getElementById("ballisticSkillModifier").value = importObject.ballisticSkillModifier;
+      document.getElementById("strengthBonusModifier").value = importObject.strengthBonusModifier;
+      document.getElementById("toughnessBonusModifier").value = importObject.toughnessBonusModifier;
+
+      // Update the character sheet to reflect the imported values
+      updateCharacterSheet();
+    }*/
+  </script>
+
+
+  <!-- Create a container for the independent ability modifiers-->
+  <!-- Create a field to modify the available points -->
+  <input type="number" id="available-points" />
+
+  <!-- Create a button to apply the modifier -->
+  <button id="apply-points-button" onclick="setPoints()">Set available points</button>
+
+  <div id="ability-modifiers">
+    <h2>Modifiers</h2>
+    <!-- Create fields for each ability modifier -->
+    Strength Modifier: <input type="number" id="strengthModifier" value="0" />
+    <br />
+    Toughness Modifier: <input type="number" id="toughnessModifier" value="0" />
+    <br />
+    Agility Modifier: <input type="number" id="agilityModifier" value="0" />
+    <br />
+    Intelligence Modifier: <input type="number" id="intelligenceModifier" value="0" />
+    <br />
+    Perception Modifier: <input type="number" id="perceptionModifier" value="0" />
+    <br />
+    Willpower Modifier: <input type="number" id="willpowerModifier" value="0" />
+    <br />
+    Fellowship Modifier: <input type="number" id="fellowshipModifier" value="0" />
+    <br />
+    Ballistic Skill Modifier: <input type="number" id="ballisticSkillModifier" value="0" />
+    <br />
+    Strength Bonus Modifier: <input type="number" id="strengthBonusModifier" value="0" />
+    <br />
+    Toughness Bonus Modifier: <input type="number" id="toughnessBonusModifier" value="0" />
+  </div>
+
+  <!-- Create a container for the ability buttons -->
+  <div id="ability-buttons">
+    <h2>Abilities</h2>
+    <!-- Create buttons for each ability -->
+    <button onclick="decreaseAbility('strength')">-</button>
+    Strength: <span id="strength">0</span>
+    <button onclick="increaseAbility('strength')">+</button>
+    <br />
+    <button onclick="decreaseAbility('toughness')">-</button>
+    Toughness: <span id="toughness">0</span>
+    <button onclick="increaseAbility('toughness')">+</button>
+    <br />
+    <button onclick="decreaseAbility('agility')">-</button>
+    Agility: <span id="agility">0</span>
+    <button onclick="increaseAbility('agility')">+</button>
+    <br />
+    <button onclick="decreaseAbility('intelligence')">-</button>
+    Intelligence: <span id="intelligence">0</span>
+    <button onclick="increaseAbility('intelligence')">+</button>
+    <br />
+    <button onclick="decreaseAbility('perception')">-</button>
+    Perception: <span id="perception">0</span>
+    <button onclick="increaseAbility('perception')">+</button>
+    <br />
+    <button onclick="decreaseAbility('willpower')">-</button>
+    Willpower: <span id="willpower">0</span>
+    <button onclick="increaseAbility('willpower')">+</button>
+    <br />
+    <button onclick="decreaseAbility('fellowship')">-</button>
+    Fellowship: <span id="fellowship">0</span>
+    <button onclick="increaseAbility('fellowship')">+</button>
+    <br />
+    <button onclick="decreaseAbility('ballisticSkill')">-</button>
+    Ballistic Skill: <span id="ballisticSkill">0</span>
+    <button onclick="increaseAbility('ballisticSkill')">+</button>
+    <br />
+
+    <button onclick="decreaseAbility('strengthBonus')" disabled>-</button>
+    Strength Bonus: <span id="strengthBonus">0</span>
+    <button onclick="increaseAbility('strengthBonus')" disabled>+</button>
+    <br />
+    <button onclick="decreaseAbility('toughnessBonus')" disabled>-</button>
+    Toughness Bonus: <span id="toughnessBonus">0</span>
+    <button onclick="increaseAbility('toughnessBonus')" disabled>+</button>
+
+  </div>
+
+  <!-- <button id="export-button">Export</button> -->
+
+  <!-- Create a container for the character sheet -->
+  <div id="character-sheet"></div>
+</body>
+
+</html>
